@@ -48,21 +48,30 @@ class CustomTextField extends StatelessWidget {
           keyboardType: keyboardType,
           decoration: InputDecoration(
             hintText: hintText,
-            prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
+            filled: true,
+            fillColor: AppColors.lightGrey,
+            prefixIcon:
+                prefixIcon != null
+                    ? Icon(prefixIcon, color: AppColors.grey)
+                    : null,
             suffixIcon:
                 suffixIcon != null
                     ? IconButton(
-                      icon: Icon(suffixIcon),
+                      icon: Icon(suffixIcon, color: AppColors.grey),
                       onPressed: onSuffixIconPressed,
                     )
                     : null,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-              borderSide: BorderSide(color: Colors.grey.shade300),
+              borderSide: BorderSide.none,
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-              borderSide: BorderSide(color: Colors.grey.shade300),
+              borderSide: BorderSide.none,
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+              borderSide: const BorderSide(color: AppColors.primary),
             ),
           ),
         ),

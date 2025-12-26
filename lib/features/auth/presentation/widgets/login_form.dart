@@ -32,24 +32,22 @@ class _LoginFormState extends ConsumerState<LoginForm> {
       child: Column(
         children: [
           CustomTextField(
-            labelText: context.tr('phoneNumber'),
-            hintText: context.tr('enterPhone'),
+            hintText: context.tr('phoneNumber'),
             controller: controllers['phone']!,
             validator: (value) => CustomValidator.phone(value, context),
-            suffixIcon: Iconsax.mobile,
+            prefixIcon: Iconsax.mobile,
           ),
           SizedBox(height: AppSizes.widgetSpacing),
           CustomTextField(
-            labelText: context.tr('password'),
-            hintText: context.tr('enterPassword'),
+            hintText: context.tr('password'),
             controller: controllers['password']!,
             validator: (value) => CustomValidator.password(value, context),
-            suffixIcon: Iconsax.lock,
-            obscureText: loginFormState.obscurePassword,
-            prefixIcon:
+            prefixIcon: Iconsax.key,
+            suffixIcon:
                 loginFormState.obscurePassword
-                    ? Icons.visibility_off_outlined
-                    : Icons.visibility_outlined,
+                    ? Iconsax.eye_slash
+                    : Iconsax.eye,
+            obscureText: loginFormState.obscurePassword,
             onSuffixIconPressed: () {
               ref
                   .read(loginFormControllerProvider.notifier)
@@ -73,7 +71,11 @@ class _LoginFormState extends ConsumerState<LoginForm> {
                       },
               child: Text(
                 context.tr('forgotPassword'),
-                style: const TextStyle(color: AppColors.primary),
+                style: const TextStyle(
+                  color: AppColors.error,
+                  decoration: TextDecoration.underline,
+                  decorationColor: AppColors.error,
+                ),
               ),
             ),
           ),
@@ -83,6 +85,8 @@ class _LoginFormState extends ConsumerState<LoginForm> {
                 authState.isLoading
                     ? context.tr('loggingIn')
                     : context.tr('login'),
+            backgroundColor: AppColors.primary,
+            textColor: AppColors.white,
             onPressed:
                 authState.isLoading
                     ? null

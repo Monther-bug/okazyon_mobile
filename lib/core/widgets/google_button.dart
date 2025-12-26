@@ -23,13 +23,10 @@ class GoogleButton extends StatelessWidget {
         ),
         label: const Text(
           'Continue with Google',
-          style: TextStyle(
-            color: AppColors.primary,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: AppColors.error, fontWeight: FontWeight.bold),
         ),
         style: OutlinedButton.styleFrom(
-          side: const BorderSide(color: AppColors.primary),
+          side: const BorderSide(color: AppColors.error),
           padding: const EdgeInsets.symmetric(vertical: 16.0),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.0),

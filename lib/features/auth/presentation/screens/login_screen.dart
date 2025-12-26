@@ -52,24 +52,67 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SizedBox(height: AppSizes.screenHeight(context) * 0.1),
-              Text(
-                context.tr('appTitle'),
-                style: const TextStyle(
-                  fontSize: 34,
-                  fontWeight: FontWeight.bold,
-                ),
+              Column(
+                children: [
+                  Text(
+                    context.tr('appTitle'),
+                    style: TextStyle(
+                      fontSize: 34,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.black,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Container(width: 40, height: 4, color: AppColors.primary),
+                ],
               ),
-              const SizedBox(height: 8),
-              Container(width: 40, height: 4, color: Colors.red),
-              SizedBox(height: AppSizes.screenHeight(context) * 0.1),
+              SizedBox(height: AppSizes.screenHeight(context) * 0.08),
               const LoginForm(),
+              SizedBox(height: AppSizes.widgetSpacing),
+              Row(
+                children: [
+                  Expanded(
+                    child: Divider(
+                      color: AppColors.grey.withValues(alpha: 0.3),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Text(
+                      context.tr(
+                        'or',
+                      ), // "or" key should be usually lowercased in design but tr might be uppercase
+                      style: const TextStyle(color: AppColors.error),
+                    ),
+                  ),
+                  Expanded(
+                    child: Divider(
+                      color: AppColors.grey.withValues(alpha: 0.3),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: AppSizes.widgetSpacing),
+              GoogleButton(
+                onPressed:
+                    authState.isLoading
+                        ? null
+                        : () {
+                          ref
+                              .read(authControllerProvider.notifier)
+                              .loginWithGoogle();
+                        },
+              ),
               SizedBox(height: AppSizes.widgetSpacing),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(context.tr('dontHaveAccount')),
-                  TextButton(
-                    onPressed:
+                  Text(
+                    context.tr('dontHaveAccount'),
+                  ), // Map manually if needed: "don't have an account?"
+                  const SizedBox(width: 4),
+                  GestureDetector(
+                    onTap:
                         authState.isLoading
                             ? null
                             : () {
@@ -82,23 +125,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             },
                     child: Text(
                       context.tr('signUp'),
-                      style: const TextStyle(color: AppColors.primary),
+                      style: const TextStyle(
+                        color: AppColors.error,
+                        decoration: TextDecoration.underline,
+                        decorationColor: AppColors.error,
+                      ),
                     ),
                   ),
                 ],
-              ),
-              SizedBox(height: AppSizes.widgetSpacing),
-              Text(context.tr('orContinueWith')),
-              SizedBox(height: AppSizes.widgetSpacing),
-              GoogleButton(
-                onPressed:
-                    authState.isLoading
-                        ? null
-                        : () {
-                          ref
-                              .read(authControllerProvider.notifier)
-                              .loginWithGoogle();
-                        },
               ),
             ],
           ),
