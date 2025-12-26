@@ -33,33 +33,30 @@ class _SignupFormState extends ConsumerState<SignupForm> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CustomTextField(
-            suffixIcon: Iconsax.user,
-            labelText: context.tr('username'),
-            hintText: context.tr('chooseUsername'),
+            hintText: context.tr('fullName'), // "full name" in screenshot
             controller: controllers['username']!,
             validator: (value) => CustomValidator.username(value, context),
+            prefixIcon: Iconsax.user,
           ),
           SizedBox(height: AppSizes.widgetSpacing),
           CustomTextField(
-            suffixIcon: Iconsax.mobile,
-            labelText: context.tr('phoneNumber'),
-            hintText: context.tr('enterPhone'),
+            hintText: context.tr('phoneNumber'),
             controller: controllers['phone']!,
             validator: (value) => CustomValidator.phone(value, context),
             keyboardType: TextInputType.phone,
+            prefixIcon: Iconsax.mobile,
           ),
           SizedBox(height: AppSizes.widgetSpacing),
           CustomTextField(
-            suffixIcon: Iconsax.lock,
-            labelText: context.tr('password'),
-            hintText: context.tr('createStrongPassword'),
+            hintText: context.tr('password'),
             controller: controllers['password']!,
             validator: (value) => CustomValidator.password(value, context),
-            obscureText: signupFormState.obscurePassword,
-            prefixIcon:
+            prefixIcon: Iconsax.key,
+            suffixIcon:
                 signupFormState.obscurePassword
-                    ? Icons.visibility_off_outlined
-                    : Icons.visibility_outlined,
+                    ? Iconsax.eye_slash
+                    : Iconsax.eye,
+            obscureText: signupFormState.obscurePassword,
             onSuffixIconPressed: () {
               ref
                   .read(signupFormControllerProvider.notifier)
@@ -68,9 +65,7 @@ class _SignupFormState extends ConsumerState<SignupForm> {
           ),
           SizedBox(height: AppSizes.widgetSpacing),
           CustomTextField(
-            suffixIcon: Iconsax.lock,
-            labelText: context.tr('confirmPassword'),
-            hintText: context.tr('enterPasswordAgain'),
+            hintText: context.tr('confirmPassword'),
             controller: controllers['confirmPassword']!,
             validator:
                 (value) => CustomValidator.confirmPassword(
@@ -78,16 +73,24 @@ class _SignupFormState extends ConsumerState<SignupForm> {
                   controllers['password']!.text,
                   context,
                 ),
-            obscureText: signupFormState.obscureConfirmPassword,
-            prefixIcon:
+            prefixIcon: Iconsax.key,
+            suffixIcon:
                 signupFormState.obscureConfirmPassword
-                    ? Icons.visibility_off_outlined
-                    : Icons.visibility_outlined,
+                    ? Iconsax.eye_slash
+                    : Iconsax.eye,
+            obscureText: signupFormState.obscureConfirmPassword,
             onSuffixIconPressed: () {
               ref
                   .read(signupFormControllerProvider.notifier)
                   .toggleConfirmPasswordVisibility();
             },
+          ),
+          SizedBox(height: AppSizes.widgetSpacing),
+          // Email field added for UI consistency with screenshot
+          CustomTextField(
+            hintText: context.tr('emailOptional'),
+            // No controller for now as it's optional and not supported by backend yet
+            prefixIcon: Iconsax.sms,
           ),
           SizedBox(height: AppSizes.widgetSpacing),
           Row(
@@ -114,17 +117,16 @@ class _SignupFormState extends ConsumerState<SignupForm> {
                     children: [
                       TextSpan(text: context.tr('iAgreeToThe')),
                       TextSpan(
-                        text: context.tr('termsOfService'),
-                        style: const TextStyle(color: AppColors.primary),
+                        text:
+                            ' ${context.tr('termsOfService')}.', // Added period and space
+                        style: const TextStyle(
+                          color: AppColors.error,
+                          fontWeight: FontWeight.bold,
+                          decoration: TextDecoration.underline,
+                          decorationColor: AppColors.error,
+                        ),
                         recognizer: TapGestureRecognizer()..onTap = () {},
                       ),
-                      TextSpan(text: context.tr('and')),
-                      TextSpan(
-                        text: context.tr('privacyPolicy'),
-                        style: const TextStyle(color: AppColors.primary),
-                        recognizer: TapGestureRecognizer()..onTap = () {},
-                      ),
-                      TextSpan(text: context.tr('dot')),
                     ],
                   ),
                 ),
@@ -135,8 +137,12 @@ class _SignupFormState extends ConsumerState<SignupForm> {
           CustomButton(
             text:
                 authState.isLoading
-                    ? context.tr('creatingAccount')
-                    : context.tr('signUpCta'),
+                    ? context.tr(
+                      'sendingOtp',
+                    ) // Assuming key exists or fallback
+                    : 'Send OTP', // Explicitly using screenshot text
+            backgroundColor: AppColors.primary,
+            textColor: AppColors.white,
             onPressed:
                 authState.isLoading
                     ? null

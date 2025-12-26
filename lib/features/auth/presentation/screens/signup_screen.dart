@@ -45,29 +45,28 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
             children: [
               SizedBox(height: AppSizes.screenHeight(context) * 0.05),
               Text(
-                context.tr('createYourAccount'),
+                "Let's sign you up",
                 style: const TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
+                  color: AppColors.black,
                 ),
               ),
               const SizedBox(height: 8),
               Text(
                 context.tr('joinOkazyonTagline'),
-                style: const TextStyle(
-                  fontSize: 18,
-                  color: AppColors.textSecondary,
-                ),
+                style: const TextStyle(fontSize: 18, color: AppColors.black),
               ),
-              SizedBox(height: AppSizes.screenHeight(context) * 0.05),
+              SizedBox(height: AppSizes.screenHeight(context) * 0.04),
               const SignupForm(),
               SizedBox(height: AppSizes.widgetSpacing),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(context.tr('alreadyHaveAccount')),
-                  TextButton(
-                    onPressed:
+                  const SizedBox(width: 4),
+                  GestureDetector(
+                    onTap:
                         authState.isLoading
                             ? null
                             : () {
@@ -79,8 +78,12 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                               );
                             },
                     child: Text(
-                      context.tr('login'),
-                      style: const TextStyle(color: AppColors.primary),
+                      context.tr('signin'),
+                      style: const TextStyle(
+                        color: AppColors.error,
+                        decoration: TextDecoration.underline,
+                        decorationColor: AppColors.error,
+                      ),
                     ),
                   ),
                 ],

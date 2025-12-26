@@ -15,7 +15,7 @@ class ForgotPasswordScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back, color: AppColors.primary),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(context.tr('resetPassword')),
@@ -30,23 +30,7 @@ class ForgotPasswordScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              const SizedBox(height: 60),
-              const Icon(
-                Icons.lock_outline,
-                color: AppColors.primary,
-                size: 70,
-              ),
               const SizedBox(height: 30),
-              Text(
-                context.tr('forgotPassword'),
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.black,
-                ),
-              ),
-              const SizedBox(height: 12),
               Text(
                 context.tr('forgotHelp'),
                 textAlign: TextAlign.center,
@@ -54,9 +38,8 @@ class ForgotPasswordScreen extends StatelessWidget {
               ),
               const SizedBox(height: 40),
               CustomTextField(
-                labelText: context.tr('phoneNumber'),
                 keyboardType: TextInputType.phone,
-                hintText: context.tr('enterPhone'),
+                hintText: context.tr('phone number'),
                 suffixIcon: Iconsax.mobile,
               ),
               SizedBox(height: AppSizes.formSpacing),
@@ -68,7 +51,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                     ),
                   );
                 },
-                text: context.tr('sendResetCode'),
+                text: context.tr('send reset code'),
               ),
               const SizedBox(height: 24),
               Row(
@@ -85,6 +68,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                     child: Text(
                       context.tr('backToLogin'),
                       style: const TextStyle(
+                        fontSize: 12,
                         color: AppColors.primary,
                         fontWeight: FontWeight.bold,
                       ),
