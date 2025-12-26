@@ -12,8 +12,8 @@ abstract class AuthRemoteDataSource {
     required String password,
   });
 
-  Future<AuthResponseModel> register({
-    required String email,
+  Future<void> register({
+    String? email,
     required String password,
     required String username,
     String? firstName,
@@ -55,7 +55,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   final Dio _dio = DioClient.instance;
 
   @override
-  @override
   Future<AuthResponseModel> login({
     required String phone,
     required String password,
@@ -81,8 +80,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<AuthResponseModel> register({
-    required String email,
+  Future<void> register({
+    String? email,
     required String password,
     required String username,
     String? firstName,
@@ -91,30 +90,17 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }) async {
     try {
       // Backend expects 'first_name', 'phone_number', 'password', 'password_confirmation'
-      // We map 'username' (which is actually Full Name in UI) to 'first_name'
-      // We use 'phone' for 'phone_number'
-      // We assume password should be confirmed. Caller should ensure logic, but here we can just pass password again if caller doesn't provide it, OR update signature.
-      // Based on plan: we need to update signature eventually, but for now lets adapt body.
-      // Ideally I should update signature of this method too. I will do that in next steps for Repository/UseCase.
-      // For now I'm updating the implementation to match backend keys.
-
       final data = {
-        'first_name':
-            firstName ?? username, // Use firstName if provided, else username
-        'email':
-            email, // Optional if backend supports it, but backend didn't list it in required
+        'first_name': firstName ?? username,
+        if (email != null && email.isNotEmpty) 'email': email,
         'password': password,
-        'password_confirmation':
-            password, // Ideally needs separate field, but usually checks local validation
+        'password_confirmation': password,
         'phone_number': phone,
-        // 'username': username, // Backend might not need this if using first_name
       };
 
       final response = await _dio.post(AppConfig.registerEndpoint, data: data);
 
-      if (response.statusCode == 201 || response.statusCode == 200) {
-        return AuthResponseModel.fromJson(response.data);
-      } else {
+      if (response.statusCode != 201 && response.statusCode != 200) {
         throw ApiException(
           'Registration failed',
           statusCode: response.statusCode,

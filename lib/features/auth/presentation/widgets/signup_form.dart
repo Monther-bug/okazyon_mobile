@@ -10,6 +10,7 @@ import 'package:okazyon_mobile/core/widgets/custom_button.dart';
 import 'package:okazyon_mobile/core/widgets/custom_text_field.dart';
 import 'package:okazyon_mobile/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:okazyon_mobile/features/auth/presentation/controllers/signup_controller.dart';
+import 'package:okazyon_mobile/features/auth/presentation/screens/otp_screen.dart';
 
 class SignupForm extends ConsumerStatefulWidget {
   const SignupForm({super.key});
@@ -146,7 +147,7 @@ class _SignupFormState extends ConsumerState<SignupForm> {
             onPressed:
                 authState.isLoading
                     ? null
-                    : () {
+                    : () async {
                       if (!signupFormState.agreeToTerms) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
@@ -158,7 +159,7 @@ class _SignupFormState extends ConsumerState<SignupForm> {
                         return;
                       }
                       if (formKey.currentState?.validate() ?? false) {
-                        ref
+                        final success = await ref
                             .read(authControllerProvider.notifier)
                             .signup(
                               username: controllers['username']!.text,
@@ -168,6 +169,18 @@ class _SignupFormState extends ConsumerState<SignupForm> {
                                   controllers['confirmPassword']!.text,
                               agreeToTerms: signupFormState.agreeToTerms,
                             );
+
+                        if (success && context.mounted) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (context) => OtpScreen(
+                                    phone: controllers['phone']!.text,
+                                  ),
+                            ),
+                          );
+                        }
                       }
                     },
           ),

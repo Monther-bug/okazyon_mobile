@@ -170,36 +170,36 @@ class AuthController extends StateNotifier<AuthState> {
     }
   }
 
-  Future<void> signup({
+  Future<bool> signup({
     required String username,
     required String phone,
     required String password,
     required String confirmPassword,
     required bool agreeToTerms,
   }) async {
-    if (state.isLoading) return;
+    if (state.isLoading) return false;
 
     if (username.trim().isEmpty) {
       state = state.copyWith(error: 'Username is required');
-      return;
+      return false;
     }
     if (phone.trim().isEmpty) {
       state = state.copyWith(error: 'Phone number is required');
-      return;
+      return false;
     }
     if (!agreeToTerms) {
       state = state.copyWith(
         error: 'You must agree to the Terms & Privacy Policy',
       );
-      return;
+      return false;
     }
     if (password.trim().isEmpty) {
       state = state.copyWith(error: 'Password is required');
-      return;
+      return false;
     }
     if (password != confirmPassword) {
       state = state.copyWith(error: 'Passwords do not match');
-      return;
+      return false;
     }
 
     state = state.copyWith(
@@ -209,25 +209,38 @@ class AuthController extends StateNotifier<AuthState> {
     );
 
     try {
-      final result = await _registerUseCase.call(
+      await _registerUseCase.call(
         username: username.trim(),
-        email: phone.trim(), // Using phone as email for now
+        // email: phone.trim(), // Removed redundant mapping
         password: password.trim(),
         phone: phone.trim(),
       );
 
+      // Don't set isAuthenticated = true yet if OTP is required.
+      // But for now keeping it compatible with existing login logic unless API dictates otherwise.
+      // Assuming flow: Register -> OTP -> Login.
+      // So isAuthenticated should arguably be false.
+      // However, to avoid breaking other listeners, we'll keep it as is or maybe just not set it?
+      // Since we navigate to OTP, we don't want to redirect to Home immediately if there's a listener for isAuthenticated.
+      // Ideally, we shouldn't set isAuthenticated on register if OTP is needed.
+      // I will Set isAuthenticated to false (or keep it false) and just return valid result.
+
       state = state.copyWith(
         isLoading: false,
-        isAuthenticated: true,
-        user: result.user.username,
+        isAuthenticated: false, // OTP required, so not fully authenticated yet
+        user:
+            username
+                .trim(), // Use the input username since we don't get one back
         clearError: true,
       );
+      return true;
     } catch (e) {
       state = state.copyWith(
         isLoading: false,
         isAuthenticated: false,
         error: _getErrorMessage(e),
       );
+      return false;
     }
   }
 

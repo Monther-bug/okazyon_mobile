@@ -30,15 +30,15 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<AuthResponse> register({
-    required String email,
+  Future<void> register({
+    String? email,
     required String password,
     required String username,
     String? firstName,
     String? lastName,
     String? phone,
   }) async {
-    final response = await remoteDataSource.register(
+    await remoteDataSource.register(
       email: email,
       password: password,
       username: username,
@@ -47,10 +47,8 @@ class AuthRepositoryImpl implements AuthRepository {
       phone: phone,
     );
 
-    await localDataSource.cacheAuthToken(response.token);
-    await localDataSource.cacheUserData(response.user);
-
-    return response.toEntity();
+    // Note: Registration now returns void (OTP flow).
+    // We do NOT cache token/user here because they are not provided yet.
   }
 
   @override
