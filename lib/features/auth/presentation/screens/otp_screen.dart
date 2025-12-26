@@ -1,7 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:okazyon_mobile/core/constants/colors.dart';
 import 'package:okazyon_mobile/core/constants/image_strings.dart';
 import 'package:okazyon_mobile/core/constants/sizes.dart';
@@ -54,7 +54,7 @@ class OtpScreen extends ConsumerWidget {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(AppSizes.pagePadding),
+          padding: EdgeInsets.all(AppSizes.pagePadding),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -63,15 +63,12 @@ class OtpScreen extends ConsumerWidget {
                 height: AppSizes.screenHeight(context) * 0.25,
                 child: SvgPicture.asset(AppImageStrings.otp),
               ),
-              const SizedBox(height: AppSizes.spaceBtwSections),
-              Text(
+              SizedBox(height: AppSizes.spaceBtwSections),
+              const Text(
                 'Enter Verification Code',
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: AppSizes.widgetSpacing),
+              SizedBox(height: AppSizes.widgetSpacing),
               Text(
                 'We\'ve sent a 6-digit code to $phone',
                 textAlign: TextAlign.center,
@@ -80,7 +77,7 @@ class OtpScreen extends ConsumerWidget {
                   fontSize: 16,
                 ),
               ),
-              const SizedBox(height: AppSizes.spaceBtwSections),
+              SizedBox(height: AppSizes.spaceBtwSections),
               Pinput(
                 length: 6,
                 defaultPinTheme: defaultPinTheme,
@@ -94,11 +91,12 @@ class OtpScreen extends ConsumerWidget {
                 showCursor: true,
                 onCompleted: (pin) => otpController.verifyOtp(pin, context),
               ),
-              const SizedBox(height: AppSizes.spaceBtwSections),
+              SizedBox(height: AppSizes.spaceBtwSections),
               CustomButton(
-                text: otpState.isLoading 
-                    ? AppLocalizations.of(context)!.verifying 
-                    : AppLocalizations.of(context)!.verify,
+                text:
+                    otpState.isLoading
+                        ? context.tr('verifying')
+                        : context.tr('verify'),
                 onPressed:
                     otpState.isLoading
                         ? null
@@ -106,16 +104,19 @@ class OtpScreen extends ConsumerWidget {
                           // The onCompleted callback handles verification
                         },
               ),
-              const SizedBox(height: AppSizes.widgetSpacing),
+              SizedBox(height: AppSizes.widgetSpacing),
               otpState.isTimerActive
                   ? Text(
-                    AppLocalizations.of(context)!.resendCodeIn(otpState.timerValue),
+                    context.tr(
+                      'resendCodeIn',
+                      namedArgs: {'seconds': otpState.timerValue.toString()},
+                    ),
                     style: const TextStyle(color: AppColors.textSecondary),
                   )
                   : TextButton(
                     onPressed: () => otpController.resendOtp(phone),
                     child: Text(
-                      AppLocalizations.of(context)!.resendCode,
+                      context.tr('resendCode'),
                       style: const TextStyle(color: AppColors.primary),
                     ),
                   ),

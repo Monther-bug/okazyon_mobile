@@ -1,52 +1,56 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CustomValidator {
   static String? email(String? value, BuildContext context) {
     if (value == null || value.isEmpty) {
-      return AppLocalizations.of(context)!.pleaseEnterEmail;
+      return context.tr('pleaseEnterEmail');
     }
     if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-      return AppLocalizations.of(context)!.pleaseEnterValidEmail;
+      return context.tr('pleaseEnterValidEmail');
     }
     return null;
   }
 
   static String? password(String? value, BuildContext context) {
     if (value == null || value.isEmpty) {
-      return AppLocalizations.of(context)!.pleaseEnterPassword;
+      return context.tr('pleaseEnterPassword');
     }
     if (value.length < 6) {
-      return AppLocalizations.of(context)!.passwordMinLength;
+      return context.tr('passwordMinLength');
     }
     return null;
   }
 
   static String? username(String? value, BuildContext context) {
     if (value == null || value.isEmpty) {
-      return AppLocalizations.of(context)!.pleaseEnterUsername;
+      return context.tr('pleaseEnterUsername');
     }
     return null;
   }
 
-  static String? confirmPassword(String? value, String password, BuildContext context) {
+  static String? confirmPassword(
+    String? value,
+    String password,
+    BuildContext context,
+  ) {
     if (value == null || value.isEmpty) {
-      return AppLocalizations.of(context)!.pleaseConfirmPassword;
+      return context.tr('pleaseConfirmPassword');
     }
     if (value != password) {
-      return AppLocalizations.of(context)!.passwordsDoNotMatch;
+      return context.tr('passwordsDoNotMatch');
     }
     return null;
   }
 
   static String? phone(String? value, BuildContext context) {
     if (value == null || value.isEmpty) {
-      return AppLocalizations.of(context)!.pleaseEnterPhone;
+      return context.tr('pleaseEnterPhone');
     }
     String phoneNumber = value.replaceAll(RegExp(r'[^\d]'), '');
 
     if (phoneNumber.length < 10) {
-      return AppLocalizations.of(context)!.pleaseEnterValidPhone;
+      return context.tr('pleaseEnterValidPhone');
     }
     return null;
   }

@@ -9,11 +9,9 @@ class HomeHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.fromLTRB(
-        AppSizes.defaultSpace,
-        AppSizes.defaultSpace * 2,
-        AppSizes.defaultSpace,
-        AppSizes.defaultSpace,
+      padding: EdgeInsets.symmetric(
+        horizontal: AppSizes.defaultSpace,
+        vertical: AppSizes.sm,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -25,7 +23,7 @@ class HomeHeader extends StatelessWidget {
                 'Hello, Monther!',
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
-              const SizedBox(height: AppSizes.xs),
+              SizedBox(height: AppSizes.xs),
               Text(
                 'Find amazing deals today',
                 style: Theme.of(context).textTheme.bodyMedium,
@@ -34,7 +32,7 @@ class HomeHeader extends StatelessWidget {
           ),
           Stack(
             children: [
-             Icon(Iconsax.notification),  
+              Icon(Iconsax.notification),
               Positioned(
                 right: 0,
                 top: 0,

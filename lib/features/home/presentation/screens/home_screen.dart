@@ -20,13 +20,13 @@ class HomeScreen extends ConsumerWidget {
           children: [
             const HomeHeader(),
             Padding(
-              padding: const EdgeInsets.all(AppSizes.defaultSpace),
+              padding: EdgeInsets.all(AppSizes.defaultSpace),
               child: Column(
                 children: [
                   const HomeSearchBar(),
-                  const SizedBox(height: AppSizes.spaceBtwSections),
+                  SizedBox(height: AppSizes.spaceBtwSections),
                   Row(
-                    children: const [
+                    children: [
                       Expanded(
                         child: CategoryCard(
                           title: 'Fresh Deals',
@@ -46,21 +46,15 @@ class HomeScreen extends ConsumerWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: AppSizes.spaceBtwSections),
+                  SizedBox(height: AppSizes.spaceBtwSections),
                   const DealOfTheDayCard(),
-                  const SizedBox(height: AppSizes.spaceBtwSections),
-                  SectionHeader(
-                    title: 'Featured Deals',
-                    onPressed: () {},
-                  ),
-                  const SizedBox(height: AppSizes.spaceBtwItems),
+                  SizedBox(height: AppSizes.spaceBtwSections),
+                  SectionHeader(title: 'Featured Deals', onPressed: () {}),
+                  SizedBox(height: AppSizes.spaceBtwItems),
                   _buildFeaturedDeals(),
-                  const SizedBox(height: AppSizes.spaceBtwSections),
-                  SectionHeader(
-                    title: 'New Arrivals',
-                    onPressed: () {},
-                  ),
-                  const SizedBox(height: AppSizes.spaceBtwItems),
+                  SizedBox(height: AppSizes.spaceBtwSections),
+                  SectionHeader(title: 'New Arrivals', onPressed: () {}),
+                  SizedBox(height: AppSizes.spaceBtwItems),
                   _buildFeaturedDeals(),
                 ],
               ),
@@ -76,7 +70,7 @@ class HomeScreen extends ConsumerWidget {
       height: 240,
       child: ListView(
         scrollDirection: Axis.horizontal,
-        children: const [
+        children: [
           FeaturedDealCard(
             image: AppImageStrings.headphones,
             title: 'Wireless Headphones',

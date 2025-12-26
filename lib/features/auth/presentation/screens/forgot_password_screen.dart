@@ -1,5 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:okazyon_mobile/core/constants/colors.dart';
 import 'package:okazyon_mobile/core/constants/sizes.dart';
@@ -18,7 +18,7 @@ class ForgotPasswordScreen extends StatelessWidget {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: Text(AppLocalizations.of(context)!.resetPassword),
+        title: Text(context.tr('resetPassword')),
         backgroundColor: Colors.transparent,
         elevation: 0,
         foregroundColor: AppColors.black,
@@ -38,7 +38,7 @@ class ForgotPasswordScreen extends StatelessWidget {
               ),
               const SizedBox(height: 30),
               Text(
-                AppLocalizations.of(context)!.forgotPassword,
+                context.tr('forgotPassword'),
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 26,
@@ -48,18 +48,18 @@ class ForgotPasswordScreen extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               Text(
-                AppLocalizations.of(context)!.forgotHelp,
+                context.tr('forgotHelp'),
                 textAlign: TextAlign.center,
                 style: const TextStyle(fontSize: 16, color: AppColors.grey),
               ),
               const SizedBox(height: 40),
               CustomTextField(
-                labelText: AppLocalizations.of(context)!.phoneNumber,
+                labelText: context.tr('phoneNumber'),
                 keyboardType: TextInputType.phone,
-                hintText: AppLocalizations.of(context)!.enterPhone,
+                hintText: context.tr('enterPhone'),
                 suffixIcon: Iconsax.mobile,
               ),
-              const SizedBox(height: AppSizes.formSpacing),
+              SizedBox(height: AppSizes.formSpacing),
               PrimaryButton(
                 onPressed: () {
                   Navigator.of(context).push(
@@ -68,14 +68,14 @@ class ForgotPasswordScreen extends StatelessWidget {
                     ),
                   );
                 },
-                text: AppLocalizations.of(context)!.sendResetCode,
+                text: context.tr('sendResetCode'),
               ),
               const SizedBox(height: 24),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    AppLocalizations.of(context)!.rememberPassword,
+                    context.tr('rememberPassword'),
                     style: const TextStyle(color: AppColors.grey),
                   ),
                   TextButton(
@@ -83,7 +83,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                       Navigator.of(context).pop();
                     },
                     child: Text(
-                      AppLocalizations.of(context)!.backToLogin,
+                      context.tr('backToLogin'),
                       style: const TextStyle(
                         color: AppColors.primary,
                         fontWeight: FontWeight.bold,

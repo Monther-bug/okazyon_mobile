@@ -47,6 +47,8 @@ dependencies:
   json_annotation: ^4.8.1
   pinput: ^5.0.2
   iconsax: ^0.0.8
+  easy_localization: ^3.0.8
+  flutter_screenutil: ^5.9.3
 
 dev_dependencies:
   flutter_test:
@@ -72,11 +74,9 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
-  generate: true
-
   assets:
+    - assets/translations/
     - assets/icons/
-    - assets/images/
     - assets/images/
 
   # To add assets to your application, add an assets section, like this:

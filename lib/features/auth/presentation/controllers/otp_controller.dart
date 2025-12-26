@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 // OTP State
 class OtpState {
@@ -57,7 +57,7 @@ class OtpController extends StateNotifier<OtpState> {
 
   Future<void> verifyOtp(String otp, BuildContext context) async {
     // Capture localization BEFORE any async gap to satisfy lint rule.
-    final localizations = AppLocalizations.of(context);
+    // final localizations = AppLocalizations.of(context);
     state = state.copyWith(isLoading: true, clearError: true);
     await Future.delayed(const Duration(seconds: 2));
     if (otp == '123456') {
@@ -65,7 +65,8 @@ class OtpController extends StateNotifier<OtpState> {
     } else {
       state = state.copyWith(
         isLoading: false,
-        error: localizations?.invalidOtpCode ?? 'Invalid OTP code',
+        error:
+            context.mounted ? context.tr('invalidOtpCode') : 'Invalid OTP code',
       );
     }
   }
