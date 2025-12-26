@@ -48,5 +48,10 @@
     "verifying": "Verifying...",
     "verify": "Verify",
     "resendCodeIn": "Resend Code in {seconds}s",
-    "resendCode": "Resend Code"
+    "resendCode": "Resend Code",
+    "fullName": "Full Name",
+    "emailOptional": "Email (Optional)",
+    "signin": "Sign In",
+    "or": "Or",
+    "sendingOtp": "Sending OTP..."
 }

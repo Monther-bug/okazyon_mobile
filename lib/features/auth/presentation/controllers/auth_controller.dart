@@ -3,6 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/usecases/login_usecase.dart';
 import '../../domain/usecases/logout_usecase.dart';
 import '../../domain/usecases/register_usecase.dart';
+import '../../domain/usecases/send_otp_usecase.dart';
+import '../../domain/usecases/verify_otp_usecase.dart';
+import '../../domain/usecases/reset_password_usecase.dart';
+import '../../domain/usecases/change_password_usecase.dart';
 import '../providers/auth_providers.dart';
 
 /// Authentication State
@@ -39,15 +43,93 @@ class AuthController extends StateNotifier<AuthState> {
   final LoginUseCase _loginUseCase;
   final RegisterUseCase _registerUseCase;
   final LogoutUseCase _logoutUseCase;
+  final SendOtpUseCase _sendOtpUseCase;
+  final VerifyOtpUseCase _verifyOtpUseCase;
+  final ResetPasswordUseCase _resetPasswordUseCase;
+  final ChangePasswordUseCase _changePasswordUseCase;
 
   AuthController({
     required LoginUseCase loginUseCase,
     required RegisterUseCase registerUseCase,
     required LogoutUseCase logoutUseCase,
+    required SendOtpUseCase sendOtpUseCase,
+    required VerifyOtpUseCase verifyOtpUseCase,
+    required ResetPasswordUseCase resetPasswordUseCase,
+    required ChangePasswordUseCase changePasswordUseCase,
   }) : _loginUseCase = loginUseCase,
        _registerUseCase = registerUseCase,
        _logoutUseCase = logoutUseCase,
+       _sendOtpUseCase = sendOtpUseCase,
+       _verifyOtpUseCase = verifyOtpUseCase,
+       _resetPasswordUseCase = resetPasswordUseCase,
+       _changePasswordUseCase = changePasswordUseCase,
        super(const AuthState());
+
+  // ... (existing login method) ...
+
+  Future<void> sendOtp({required String phone, required String purpose}) async {
+    if (state.isLoading) return;
+    state = state.copyWith(isLoading: true, clearError: true);
+    try {
+      await _sendOtpUseCase.call(phone: phone, purpose: purpose);
+      state = state.copyWith(isLoading: false);
+    } catch (e) {
+      state = state.copyWith(isLoading: false, error: _getErrorMessage(e));
+    }
+  }
+
+  Future<bool> verifyOtp({required String phone, required String otp}) async {
+    if (state.isLoading) return false;
+    state = state.copyWith(isLoading: true, clearError: true);
+    try {
+      final isVerified = await _verifyOtpUseCase.call(phone: phone, otp: otp);
+      state = state.copyWith(isLoading: false);
+      return isVerified;
+    } catch (e) {
+      state = state.copyWith(isLoading: false, error: _getErrorMessage(e));
+      return false;
+    }
+  }
+
+  Future<void> resetPassword({
+    required String phone,
+    required String otp,
+    required String newPassword,
+  }) async {
+    if (state.isLoading) return;
+    state = state.copyWith(isLoading: true, clearError: true);
+    try {
+      await _resetPasswordUseCase.call(
+        phone: phone,
+        otp: otp,
+        newPassword: newPassword,
+      );
+      state = state.copyWith(isLoading: false);
+    } catch (e) {
+      state = state.copyWith(isLoading: false, error: _getErrorMessage(e));
+    }
+  }
+
+  Future<void> changePassword({
+    required String currentPassword,
+    required String newPassword,
+    required String confirmPassword,
+  }) async {
+    if (state.isLoading) return;
+    state = state.copyWith(isLoading: true, clearError: true);
+    try {
+      await _changePasswordUseCase.call(
+        currentPassword: currentPassword,
+        newPassword: newPassword,
+        confirmPassword: confirmPassword,
+      );
+      state = state.copyWith(isLoading: false);
+    } catch (e) {
+      state = state.copyWith(isLoading: false, error: _getErrorMessage(e));
+    }
+  }
+
+  // ... (existing methods like login, signup, logout) ...
 
   Future<void> login({required String phone, required String password}) async {
     if (state.isLoading) return;
@@ -69,7 +151,7 @@ class AuthController extends StateNotifier<AuthState> {
 
     try {
       final result = await _loginUseCase.call(
-        email: phone.trim(), // Using phone as email for now
+        phone: phone.trim(),
         password: password.trim(),
       );
 
@@ -205,5 +287,9 @@ final authControllerProvider = StateNotifierProvider<AuthController, AuthState>(
     loginUseCase: ref.read(loginUseCaseProvider),
     registerUseCase: ref.read(registerUseCaseProvider),
     logoutUseCase: ref.read(logoutUseCaseProvider),
+    sendOtpUseCase: ref.read(sendOtpUseCaseProvider),
+    verifyOtpUseCase: ref.read(verifyOtpUseCaseProvider),
+    resetPasswordUseCase: ref.read(resetPasswordUseCaseProvider),
+    changePasswordUseCase: ref.read(changePasswordUseCaseProvider),
   ),
 );

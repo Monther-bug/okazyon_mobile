@@ -15,11 +15,11 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<AuthResponse> login({
-    required String email,
+    required String phone,
     required String password,
   }) async {
     final response = await remoteDataSource.login(
-      email: email,
+      phone: phone,
       password: password,
     );
 
@@ -60,8 +60,16 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<void> resetPassword({required String email}) async {
-    await remoteDataSource.resetPassword(email: email);
+  Future<void> resetPassword({
+    required String phone,
+    required String otp,
+    required String newPassword,
+  }) async {
+    await remoteDataSource.resetPassword(
+      phone: phone,
+      otp: otp,
+      newPassword: newPassword,
+    );
   }
 
   @override
@@ -78,9 +86,8 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  @override
-  Future<void> sendOtp({required String phone}) async {
-    await remoteDataSource.sendOtp(phone: phone);
+  Future<void> sendOtp({required String phone, required String purpose}) async {
+    await remoteDataSource.sendOtp(phone: phone, purpose: purpose);
   }
 
   @override

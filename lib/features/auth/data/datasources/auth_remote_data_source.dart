@@ -8,7 +8,7 @@ import '../models/user_model.dart';
 
 abstract class AuthRemoteDataSource {
   Future<AuthResponseModel> login({
-    required String email,
+    required String phone,
     required String password,
   });
 
@@ -23,7 +23,11 @@ abstract class AuthRemoteDataSource {
 
   Future<void> logout();
 
-  Future<void> resetPassword({required String email});
+  Future<void> resetPassword({
+    required String phone,
+    required String otp,
+    required String newPassword,
+  });
 
   Future<void> changePassword({
     required String currentPassword,
@@ -31,7 +35,7 @@ abstract class AuthRemoteDataSource {
     required String confirmPassword,
   });
 
-  Future<void> sendOtp({required String phone});
+  Future<void> sendOtp({required String phone, required String purpose});
 
   Future<bool> verifyOtp({required String phone, required String otp});
 
@@ -51,14 +55,15 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   final Dio _dio = DioClient.instance;
 
   @override
+  @override
   Future<AuthResponseModel> login({
-    required String email,
+    required String phone,
     required String password,
   }) async {
     try {
       final response = await _dio.post(
         AppConfig.loginEndpoint,
-        data: {'email': email, 'password': password},
+        data: {'phone_number': phone, 'password': password},
       );
 
       if (response.statusCode == 200) {
@@ -85,13 +90,24 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     String? phone,
   }) async {
     try {
+      // Backend expects 'first_name', 'phone_number', 'password', 'password_confirmation'
+      // We map 'username' (which is actually Full Name in UI) to 'first_name'
+      // We use 'phone' for 'phone_number'
+      // We assume password should be confirmed. Caller should ensure logic, but here we can just pass password again if caller doesn't provide it, OR update signature.
+      // Based on plan: we need to update signature eventually, but for now lets adapt body.
+      // Ideally I should update signature of this method too. I will do that in next steps for Repository/UseCase.
+      // For now I'm updating the implementation to match backend keys.
+
       final data = {
-        'email': email,
+        'first_name':
+            firstName ?? username, // Use firstName if provided, else username
+        'email':
+            email, // Optional if backend supports it, but backend didn't list it in required
         'password': password,
-        'username': username,
-        if (firstName != null) 'first_name': firstName,
-        if (lastName != null) 'last_name': lastName,
-        if (phone != null) 'phone': phone,
+        'password_confirmation':
+            password, // Ideally needs separate field, but usually checks local validation
+        'phone_number': phone,
+        // 'username': username, // Backend might not need this if using first_name
       };
 
       final response = await _dio.post(AppConfig.registerEndpoint, data: data);
@@ -128,11 +144,20 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<void> resetPassword({required String email}) async {
+  Future<void> resetPassword({
+    required String phone,
+    required String otp,
+    required String newPassword,
+  }) async {
     try {
       final response = await _dio.post(
         AppConfig.resetPasswordEndpoint,
-        data: {'email': email},
+        data: {
+          'phone_number': phone,
+          'otp': otp,
+          'password': newPassword,
+          'password_confirmation': newPassword,
+        },
       );
 
       if (response.statusCode != 200) {
@@ -176,11 +201,11 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<void> sendOtp({required String phone}) async {
+  Future<void> sendOtp({required String phone, required String purpose}) async {
     try {
       final response = await _dio.post(
         AppConfig.sendOtpEndpoint,
-        data: {'phone': phone},
+        data: {'phone_number': phone, 'purpose': purpose},
       );
 
       if (response.statusCode != 200) {
@@ -200,7 +225,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     try {
       final response = await _dio.post(
         AppConfig.verifyOtpEndpoint,
-        data: {'phone': phone, 'otp': otp},
+        data: {'phone_number': phone, 'otp': otp},
       );
 
       if (response.statusCode == 200) {

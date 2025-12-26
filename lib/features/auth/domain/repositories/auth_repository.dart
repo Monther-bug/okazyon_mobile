@@ -2,7 +2,7 @@ import '../entities/auth_response.dart';
 import '../entities/user.dart';
 
 abstract class AuthRepository {
-  Future<AuthResponse> login({required String email, required String password});
+  Future<AuthResponse> login({required String phone, required String password});
 
   Future<AuthResponse> register({
     required String email,
@@ -15,7 +15,11 @@ abstract class AuthRepository {
 
   Future<void> logout();
 
-  Future<void> resetPassword({required String email});
+  Future<void> resetPassword({
+    required String phone,
+    required String otp,
+    required String newPassword,
+  });
 
   Future<void> changePassword({
     required String currentPassword,
@@ -23,7 +27,7 @@ abstract class AuthRepository {
     required String confirmPassword,
   });
 
-  Future<void> sendOtp({required String phone});
+  Future<void> sendOtp({required String phone, required String purpose});
 
   Future<bool> verifyOtp({required String phone, required String otp});
 
