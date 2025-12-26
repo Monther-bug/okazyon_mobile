@@ -177,6 +177,7 @@ class _SignupFormState extends ConsumerState<SignupForm> {
                               builder:
                                   (context) => OtpScreen(
                                     phone: controllers['phone']!.text,
+                                    password: controllers['password']!.text,
                                   ),
                             ),
                           );

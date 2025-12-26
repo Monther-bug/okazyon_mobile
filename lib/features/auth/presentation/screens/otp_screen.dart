@@ -11,7 +11,8 @@ import 'package:pinput/pinput.dart';
 
 class OtpScreen extends ConsumerWidget {
   final String phone;
-  const OtpScreen({super.key, required this.phone});
+  final String? password;
+  const OtpScreen({super.key, required this.phone, this.password});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -89,7 +90,9 @@ class OtpScreen extends ConsumerWidget {
                 },
                 pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
                 showCursor: true,
-                onCompleted: (pin) => otpController.verifyOtp(pin, context),
+                onCompleted:
+                    (pin) =>
+                        otpController.verifyOtp(pin, context, phone, password),
               ),
               SizedBox(height: AppSizes.spaceBtwSections),
               CustomButton(

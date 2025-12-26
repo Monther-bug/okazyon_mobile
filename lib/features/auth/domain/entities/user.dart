@@ -1,6 +1,6 @@
 class AppUser {
   final String id;
-  final String email;
+  final String? email;
   final String? username;
   final String? firstName;
   final String? lastName;
@@ -11,7 +11,7 @@ class AppUser {
 
   const AppUser({
     required this.id,
-    required this.email,
+    this.email,
     this.username,
     this.firstName,
     this.lastName,
@@ -25,7 +25,7 @@ class AppUser {
     if (firstName != null && lastName != null) {
       return '$firstName $lastName';
     }
-    return username ?? email;
+    return username ?? email ?? phone ?? 'User';
   }
 
   AppUser copyWith({
