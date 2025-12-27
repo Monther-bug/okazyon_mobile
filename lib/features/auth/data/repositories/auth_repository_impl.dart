@@ -1,3 +1,4 @@
+import 'package:google_sign_in/google_sign_in.dart' as gsi;
 import '../../domain/entities/auth_response.dart';
 import '../../domain/entities/user.dart';
 import '../../domain/repositories/auth_repository.dart';
@@ -27,6 +28,38 @@ class AuthRepositoryImpl implements AuthRepository {
     await localDataSource.cacheUserData(response.user);
 
     return response.toEntity();
+  }
+
+  @override
+  Future<AuthResponse> loginWithGoogle() async {
+    final gsi.GoogleSignIn googleSignIn = gsi.GoogleSignIn();
+    try {
+      final gsi.GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+      if (googleUser == null) {
+        throw Exception(); // User canceled
+      }
+
+      final gsi.GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+      final String? accessToken = googleAuth.accessToken;
+
+      if (accessToken == null) {
+        throw Exception('Failed to get access token');
+      }
+
+      final response = await remoteDataSource.loginWithGoogle(accessToken);
+
+      await localDataSource.cacheAuthToken(response.token);
+      await localDataSource.cacheUserData(response.user);
+
+      return response.toEntity();
+    } catch (e) {
+      // Only sign out if there was an error to clear partial state if any,
+      // though signIn usually handles clean state.
+      // Re-throwing to be handled by controller
+      await googleSignIn.signOut();
+      rethrow;
+    }
   }
 
   @override

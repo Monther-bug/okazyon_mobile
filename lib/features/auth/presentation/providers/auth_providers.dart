@@ -12,6 +12,7 @@ import '../../domain/usecases/send_otp_usecase.dart';
 import '../../domain/usecases/verify_otp_usecase.dart';
 import '../../domain/usecases/reset_password_usecase.dart';
 import '../../domain/usecases/change_password_usecase.dart';
+import '../../domain/usecases/login_with_google_usecase.dart';
 
 final authRemoteDataSourceProvider = Provider<AuthRemoteDataSource>((ref) {
   return AuthRemoteDataSourceImpl();
@@ -58,4 +59,8 @@ final resetPasswordUseCaseProvider = Provider<ResetPasswordUseCase>((ref) {
 
 final changePasswordUseCaseProvider = Provider<ChangePasswordUseCase>((ref) {
   return ChangePasswordUseCase(ref.watch(authRepositoryProvider));
+});
+
+final loginWithGoogleUseCaseProvider = Provider<LoginWithGoogleUseCase>((ref) {
+  return LoginWithGoogleUseCase(ref.watch(authRepositoryProvider));
 });

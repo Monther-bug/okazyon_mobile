@@ -7,6 +7,7 @@ import '../../domain/usecases/send_otp_usecase.dart';
 import '../../domain/usecases/verify_otp_usecase.dart';
 import '../../domain/usecases/reset_password_usecase.dart';
 import '../../domain/usecases/change_password_usecase.dart';
+import '../../domain/usecases/login_with_google_usecase.dart';
 import '../providers/auth_providers.dart';
 
 /// Authentication State
@@ -47,6 +48,7 @@ class AuthController extends StateNotifier<AuthState> {
   final VerifyOtpUseCase _verifyOtpUseCase;
   final ResetPasswordUseCase _resetPasswordUseCase;
   final ChangePasswordUseCase _changePasswordUseCase;
+  final LoginWithGoogleUseCase _loginWithGoogleUseCase;
 
   AuthController({
     required LoginUseCase loginUseCase,
@@ -56,6 +58,7 @@ class AuthController extends StateNotifier<AuthState> {
     required VerifyOtpUseCase verifyOtpUseCase,
     required ResetPasswordUseCase resetPasswordUseCase,
     required ChangePasswordUseCase changePasswordUseCase,
+    required LoginWithGoogleUseCase loginWithGoogleUseCase,
   }) : _loginUseCase = loginUseCase,
        _registerUseCase = registerUseCase,
        _logoutUseCase = logoutUseCase,
@@ -63,6 +66,7 @@ class AuthController extends StateNotifier<AuthState> {
        _verifyOtpUseCase = verifyOtpUseCase,
        _resetPasswordUseCase = resetPasswordUseCase,
        _changePasswordUseCase = changePasswordUseCase,
+       _loginWithGoogleUseCase = loginWithGoogleUseCase,
        super(const AuthState());
 
   // ... (existing login method) ...
@@ -247,11 +251,28 @@ class AuthController extends StateNotifier<AuthState> {
   Future<void> loginWithGoogle() async {
     if (state.isLoading) return;
     state = state.copyWith(isLoading: true, clearError: true);
-    await Future.delayed(const Duration(seconds: 1));
-    state = state.copyWith(
-      isLoading: false,
-      error: 'Google login not implemented yet',
-    );
+
+    try {
+      final result = await _loginWithGoogleUseCase.call();
+
+      state = state.copyWith(
+        isLoading: false,
+        isAuthenticated: true,
+        user: result.user.username,
+        clearError: true,
+      );
+    } catch (e) {
+      if (e is! Exception || e.toString().contains('Canceled')) {
+        // Handle cancellation gracefully if needed, mostly just stop loading
+        state = state.copyWith(isLoading: false);
+        return;
+      }
+      state = state.copyWith(
+        isLoading: false,
+        isAuthenticated: false,
+        error: _getErrorMessage(e),
+      );
+    }
   }
 
   Future<void> logout() async {
@@ -304,5 +325,6 @@ final authControllerProvider = StateNotifierProvider<AuthController, AuthState>(
     verifyOtpUseCase: ref.read(verifyOtpUseCaseProvider),
     resetPasswordUseCase: ref.read(resetPasswordUseCaseProvider),
     changePasswordUseCase: ref.read(changePasswordUseCaseProvider),
+    loginWithGoogleUseCase: ref.read(loginWithGoogleUseCaseProvider),
   ),
 );

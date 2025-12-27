@@ -12,6 +12,8 @@ abstract class AuthRemoteDataSource {
     required String password,
   });
 
+  Future<AuthResponseModel> loginWithGoogle(String accessToken);
+
   Future<void> register({
     String? email,
     required String password,
@@ -80,6 +82,28 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
+  Future<AuthResponseModel> loginWithGoogle(String accessToken) async {
+    try {
+      final response = await _dio.post(
+        AppConfig.googleLoginEndpoint,
+        data: {'access_token': accessToken},
+      );
+
+      if (response.statusCode == 200) {
+        return AuthResponseModel.fromJson(response.data);
+      } else {
+        throw ApiException(
+          'Google Login failed',
+          statusCode: response.statusCode,
+          data: response.data,
+        );
+      }
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
+  @override
   Future<void> register({
     String? email,
     required String password,
@@ -89,7 +113,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     String? phone,
   }) async {
     try {
-      // Backend expects 'first_name', 'phone_number', 'password', 'password_confirmation'
       final data = {
         'first_name': firstName ?? username,
         if (email != null && email.isNotEmpty) 'email': email,

@@ -14,4 +14,5 @@ class AppConfig {
   static const String fcmTokenEndpoint = 'fcm-token';
   static const String profileEndpoint = 'profile';
   static const String changePasswordEndpoint = 'change-password';
+  static const String googleLoginEndpoint = 'google-login';
 }

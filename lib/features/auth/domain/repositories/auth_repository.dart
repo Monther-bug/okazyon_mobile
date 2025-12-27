@@ -3,6 +3,7 @@ import '../entities/user.dart';
 
 abstract class AuthRepository {
   Future<AuthResponse> login({required String phone, required String password});
+  Future<AuthResponse> loginWithGoogle();
 
   Future<void> register({
     String? email,
